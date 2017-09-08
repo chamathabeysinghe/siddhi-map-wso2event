@@ -123,13 +123,14 @@ public class WSO2SinkMapper extends SinkMapper {
      *
      * @param streamDefinition The stream definition
      * @param optionHolder     Option holder containing static and dynamic options
-     * @param templateBuilder  Unmapped payload for reference
-     * @param configReader     Config
+     * @param payloadTemplateBuilderMap  Unmapped list of payloads for reference
+     * @param mapperConfigReader     Config
      * @param siddhiAppContext SiddhiApp context
      */
     @Override
-    public void init(StreamDefinition streamDefinition, OptionHolder optionHolder, TemplateBuilder templateBuilder,
-                     ConfigReader configReader, SiddhiAppContext siddhiAppContext) {
+    public void init(StreamDefinition streamDefinition, OptionHolder optionHolder,
+                     Map<String, TemplateBuilder> payloadTemplateBuilderMap, ConfigReader mapperConfigReader,
+                     SiddhiAppContext siddhiAppContext) {
 
         List<Attribute> attributeList = streamDefinition.getAttributeList();
 
@@ -189,9 +190,10 @@ public class WSO2SinkMapper extends SinkMapper {
                 WSO2EventMapperUtils.DEFAULT_STREAM_VERSION;
     }
 
+
     @Override
-    public void mapAndSend(Event event, OptionHolder optionHolder, TemplateBuilder templateBuilder,
-                           SinkListener sinkListener) {
+    public void mapAndSend(Event event, OptionHolder optionHolder, Map<String,
+            TemplateBuilder> payloadTemplateBuilderMap, SinkListener sinkListener) {
         sinkListener.publish(performMapping(event));
     }
 
@@ -200,16 +202,17 @@ public class WSO2SinkMapper extends SinkMapper {
      *
      * @param events          Event object array
      * @param optionHolder    option holder containing static and dynamic options
-     * @param templateBuilder Unmapped payload for reference
+     * @param payloadTemplateBuilderMap Unmapped list of payloads for reference
      * @param sinkListener    output transport callback
      */
     @Override
-    public void mapAndSend(Event[] events, OptionHolder optionHolder, TemplateBuilder templateBuilder,
-                           SinkListener sinkListener) {
+    public void mapAndSend(Event[] events, OptionHolder optionHolder,
+                           Map<String, TemplateBuilder> payloadTemplateBuilderMap, SinkListener sinkListener) {
         for (Event event : events) {
             sinkListener.publish(performMapping(event));
         }
     }
+
 
     /**
      * Convert the given {@link Event} to WSO2 {@link org.wso2.carbon.databridge.commons.Event}.
